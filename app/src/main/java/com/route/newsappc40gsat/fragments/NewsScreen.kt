@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.route.newsappc40gsat.Colors
 import com.route.newsappc40gsat.R
 import com.route.newsappc40gsat.api.ApiManager
@@ -37,10 +38,11 @@ import retrofit2.Response
 
 
 @Composable
-fun NewsScreen(category: Category, modifier: Modifier = Modifier) {
+fun NewsScreen(navHostController: NavHostController,category: Category, modifier: Modifier = Modifier) {
     val sourcesListState = remember {
         mutableStateListOf<SourcesItem>()
     }
+
     NewsContent(
         modifier = Modifier
             .fillMaxSize()
@@ -48,8 +50,10 @@ fun NewsScreen(category: Category, modifier: Modifier = Modifier) {
                 painter = painterResource(id = R.drawable.pattern),
                 contentScale = ContentScale.FillBounds
             ),
-        sourcesList = sourcesListState
+        sourcesList = sourcesListState,
+        navHostController = navHostController
     )
+
     LaunchedEffect(Unit) {
         ApiManager.getNewsService().getNewsSources(categoryId = category.apiID)
             .enqueue(object : Callback<SourcesResponse> {
@@ -72,7 +76,7 @@ fun NewsScreen(category: Category, modifier: Modifier = Modifier) {
 
 
 @Composable
-fun NewsContent(sourcesList: List<SourcesItem>, modifier: Modifier = Modifier) {
+fun NewsContent(navHostController: NavHostController,sourcesList: List<SourcesItem>, modifier: Modifier = Modifier) {
     var selectedTabIndex by remember {
         mutableIntStateOf(0)
     }
@@ -116,14 +120,14 @@ fun NewsContent(sourcesList: List<SourcesItem>, modifier: Modifier = Modifier) {
                 }
             }
             if (selectedSourceId.isNotEmpty())
-                NewsLazyColumn(selectedSourceId)
+                NewsLazyColumn(navHostController = navHostController,selectedSourceId)
         }
 }
 
 @Preview
 @Composable
 private fun NewsContentPreview() {
-    NewsContent(listOf())
+  //  NewsContent(listOf())
 }
 /**
  * News App  (APIs concept - RESTful APIS concept-> Retrofit )

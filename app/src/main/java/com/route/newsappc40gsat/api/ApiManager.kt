@@ -17,6 +17,7 @@ object ApiManager {
         val httpLoggingInterceptor = HttpLoggingInterceptor { message ->
             Log.e("API", message)
         }
+
         httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
         return httpLoggingInterceptor
     }
